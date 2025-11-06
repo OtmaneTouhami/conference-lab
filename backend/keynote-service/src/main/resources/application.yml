@@ -1,8 +1,8 @@
 spring:
   application:
-    name: gateway-service
+    name: keynote-service
   config:
     import: optional:configserver:http://localhost:9999/
 
 server:
-  port: 8888
+  port: 8080
