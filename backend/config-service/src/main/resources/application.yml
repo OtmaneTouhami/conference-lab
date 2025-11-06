@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: config-service
+  cloud:
+    discovery:
+      enabled: true
+    config:
+      server:
+        git:
+          uri: ${HOME}/This_Semester_Directory/Systemes_Paralleles_et_Distribues/Labs/conference-lab/backend/config/
+
+server:
+  port: 9999
+
