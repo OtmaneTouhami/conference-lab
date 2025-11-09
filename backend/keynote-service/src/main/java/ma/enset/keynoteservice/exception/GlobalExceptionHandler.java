@@ -1,5 +1,7 @@
 package ma.enset.keynoteservice.exception;
 
+import ma.enset.keynoteservice.exception.dto.ErrorDetails;
+import ma.enset.keynoteservice.exception.dto.ValidationErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +22,7 @@ public class GlobalExceptionHandler {
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 HttpStatus.NOT_FOUND.value(),
+                LocalDate.now(),
                 ex.getMessage(),
                 request.getDescription(false)
         );
@@ -35,13 +39,22 @@ public class GlobalExceptionHandler {
                 fieldError -> errors.put(fieldError.getField(), fieldError.getDefaultMessage())
         );
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ValidationErrorDetails validationErrorDetails = new ValidationErrorDetails(
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDate.now(),
+                "Validation error",
+                request.getDescription(false),
+                errors
+        );
+
+        return new ResponseEntity<>(validationErrorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                LocalDate.now(),
                 "An unexpected error occurred",
                 request.getDescription(false)
         );
