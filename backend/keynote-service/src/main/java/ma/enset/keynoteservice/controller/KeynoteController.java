@@ -1,5 +1,6 @@
 package ma.enset.keynoteservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.enset.keynoteservice.dto.KeynoteRequestDto;
 import ma.enset.keynoteservice.dto.KeynoteResponseDto;
@@ -17,7 +18,7 @@ public class KeynoteController {
     private final KeynoteService keynoteService;
 
     @PostMapping
-    public ResponseEntity<?> createKeynote(@RequestBody KeynoteRequestDto keynoteRequestDto) {
+    public ResponseEntity<?> createKeynote(@Valid @RequestBody KeynoteRequestDto keynoteRequestDto) {
         KeynoteResponseDto responseDto = keynoteService.createKeynote(keynoteRequestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -33,7 +34,9 @@ public class KeynoteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateKeynote(@PathVariable UUID id, @RequestBody KeynoteRequestDto keynoteRequestDto) {
+    public ResponseEntity<?> updateKeynote(
+            @PathVariable UUID id,
+            @Valid @RequestBody KeynoteRequestDto keynoteRequestDto) {
         return new ResponseEntity<>(keynoteService.updateKeynote(id, keynoteRequestDto), HttpStatus.OK);
     }
 

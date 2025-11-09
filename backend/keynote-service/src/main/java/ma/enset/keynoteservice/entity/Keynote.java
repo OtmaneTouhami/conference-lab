@@ -21,5 +21,6 @@ public class Keynote {
     private String lastName;
     @Column(unique = true)
     private String email;
+    @Column(name = "role")
     private String function;
 }
