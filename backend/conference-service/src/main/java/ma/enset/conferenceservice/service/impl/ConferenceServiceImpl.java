@@ -8,17 +8,20 @@ import ma.enset.conferenceservice.mapper.ConferenceMapper;
 import ma.enset.conferenceservice.repository.ConferenceRepository;
 import ma.enset.conferenceservice.service.ConferenceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ConferenceServiceImpl implements ConferenceService {
     private final ConferenceRepository conferenceRepository;
     private final ConferenceMapper conferenceMapper;
 
     @Override
+    @Transactional
     public ConferenceResponseDto createConference(ConferenceRequestDto ConferenceRequestDto) {
         Conference conference = conferenceMapper.toEntity(ConferenceRequestDto);
         return conferenceMapper.toDto(conferenceRepository.save(conference));
@@ -39,6 +42,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
+    @Transactional
     public ConferenceResponseDto updateConference(UUID id, ConferenceRequestDto ConferenceRequestDto) {
         Conference conference = conferenceRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Conference with the id '" + id + "' was not found")
@@ -49,6 +53,7 @@ public class ConferenceServiceImpl implements ConferenceService {
     }
 
     @Override
+    @Transactional
     public void deleteConferenceById(UUID id) {
         if (!conferenceRepository.existsById(id)) {
             throw new RuntimeException("Conference with the id '" + id + "' was not found");
