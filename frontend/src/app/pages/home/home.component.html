@@ -1,0 +1,120 @@
+<div class="home">
+    <section class="hero">
+        <h1 class="hero-title">Conference Management System</h1>
+        <p class="hero-description">
+            Manage your keynotes and conferences with ease. Track enrollments, reviews, and more.
+        </p>
+
+        @if (!authService.isAuthenticated()) {
+        <div class="hero-actions">
+            <app-button size="lg" (click)="authService.login()">
+                Get Started
+            </app-button>
+        </div>
+        }
+    </section>
+
+    @if (authService.isAuthenticated()) {
+    <section class="stats">
+        <div class="stats-grid">
+            <app-card>
+                <app-card-header>
+                    <app-card-description>Total Keynotes</app-card-description>
+                    <app-card-title>{{ keynoteCount() }}</app-card-title>
+                </app-card-header>
+            </app-card>
+
+            <app-card>
+                <app-card-header>
+                    <app-card-description>Total Conferences</app-card-description>
+                    <app-card-title>{{ conferenceCount() }}</app-card-title>
+                </app-card-header>
+            </app-card>
+
+            <app-card>
+                <app-card-header>
+                    <app-card-description>Your Role</app-card-description>
+                    <app-card-title>
+                        @if (authService.isAdmin()) {
+                        Administrator
+                        } @else {
+                        User
+                        }
+                    </app-card-title>
+                </app-card-header>
+            </app-card>
+        </div>
+    </section>
+
+    <section class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+            <a routerLink="/keynotes" class="action-card">
+                <app-card>
+                    <app-card-header>
+                        <app-card-title>👤 Keynotes</app-card-title>
+                        <app-card-description>
+                            View and manage keynote speakers
+                        </app-card-description>
+                    </app-card-header>
+                    <app-card-content>
+                        <app-button variant="outline" class="w-full">
+                            View Keynotes →
+                        </app-button>
+                    </app-card-content>
+                </app-card>
+            </a>
+
+            <a routerLink="/conferences" class="action-card">
+                <app-card>
+                    <app-card-header>
+                        <app-card-title>📅 Conferences</app-card-title>
+                        <app-card-description>
+                            View and manage conferences
+                        </app-card-description>
+                    </app-card-header>
+                    <app-card-content>
+                        <app-button variant="outline" class="w-full">
+                            View Conferences →
+                        </app-button>
+                    </app-card-content>
+                </app-card>
+            </a>
+
+            @if (authService.isAdmin()) {
+            <a routerLink="/keynotes/new" class="action-card">
+                <app-card>
+                    <app-card-header>
+                        <app-card-title>➕ New Keynote</app-card-title>
+                        <app-card-description>
+                            Add a new keynote speaker
+                        </app-card-description>
+                    </app-card-header>
+                    <app-card-content>
+                        <app-button class="w-full">
+                            Add Keynote
+                        </app-button>
+                    </app-card-content>
+                </app-card>
+            </a>
+
+            <a routerLink="/conferences/new" class="action-card">
+                <app-card>
+                    <app-card-header>
+                        <app-card-title>➕ New Conference</app-card-title>
+                        <app-card-description>
+                            Create a new conference
+                        </app-card-description>
+                    </app-card-header>
+                    <app-card-content>
+                        <app-button class="w-full">
+                            Add Conference
+                        </app-button>
+                    </app-card-content>
+                </app-card>
+            </a>
+            }
+        </div>
+    </section>
+    }
+</div>

@@ -1,0 +1,6 @@
+:host {
+    display: flex;
+    align-items: center;
+    padding: var(--space-6);
+    padding-top: 0;
+}

@@ -1,0 +1,50 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <a routerLink="/" class="logo">
+                <span class="logo-icon">📋</span>
+                <span class="logo-text">Conference Manager</span>
+            </a>
+        </div>
+
+        <div class="navbar-links">
+            @if (authService.isAuthenticated()) {
+            <a routerLink="/keynotes" routerLinkActive="active" class="nav-link">
+                Keynotes
+            </a>
+            <a routerLink="/conferences" routerLinkActive="active" class="nav-link">
+                Conferences
+            </a>
+            }
+        </div>
+
+        <div class="navbar-actions">
+            @if (authService.isLoading()) {
+            <div class="spinner"></div>
+            } @else if (authService.isAuthenticated()) {
+            <div class="user-info">
+                <span class="user-avatar">
+                    {{ getInitials() }}
+                </span>
+                <div class="user-details">
+                    <span class="user-name">{{ authService.displayName() }}</span>
+                    <span class="user-role">
+                        @if (authService.isAdmin()) {
+                        Admin
+                        } @else {
+                        User
+                        }
+                    </span>
+                </div>
+            </div>
+            <app-button variant="outline" size="sm" (click)="authService.logout()">
+                Logout
+            </app-button>
+            } @else {
+            <app-button (click)="authService.login()">
+                Login
+            </app-button>
+            }
+        </div>
+    </div>
+</nav>

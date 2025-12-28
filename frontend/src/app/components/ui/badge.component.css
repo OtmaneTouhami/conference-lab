@@ -1,0 +1,41 @@
+:host {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.125rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+:host(.variant-default) {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+
+:host(.variant-secondary) {
+    background-color: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+}
+
+:host(.variant-destructive) {
+    background-color: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
+}
+
+:host(.variant-outline) {
+    background-color: transparent;
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+}
+
+:host(.variant-success) {
+    background-color: hsl(var(--success));
+    color: hsl(var(--success-foreground));
+}
+
+:host(.variant-warning) {
+    background-color: hsl(var(--warning));
+    color: hsl(var(--warning-foreground));
+}

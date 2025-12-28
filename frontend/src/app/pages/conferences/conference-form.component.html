@@ -1,0 +1,77 @@
+<div class="page">
+    <app-card class="form-card">
+        <app-card-header>
+            <app-card-title>
+                {{ isEditMode() ? 'Edit Conference' : 'Create Conference' }}
+            </app-card-title>
+            <app-card-description>
+                {{ isEditMode() ? 'Update the conference details' : 'Create a new conference event' }}
+            </app-card-description>
+        </app-card-header>
+
+        <app-card-content>
+            @if (loadingData()) {
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading conference data...</p>
+            </div>
+            } @else {
+            <form (ngSubmit)="onSubmit()" class="form">
+                <app-input id="title" label="Title" placeholder="Enter conference title" [(ngModel)]="form.title"
+                    name="title" [error]="errors()['title']" />
+
+                <div class="form-group">
+                    <label for="type" class="label">Type</label>
+                    <select id="type" name="type" [(ngModel)]="form.type" class="select"
+                        [class.error]="errors()['type']">
+                        <option value="">Select type</option>
+                        <option value="ACADEMIC">Academic</option>
+                        <option value="COMMERCIAL">Commercial</option>
+                    </select>
+                    @if (errors()['type']) {
+                    <span class="error-message">{{ errors()['type'] }}</span>
+                    }
+                </div>
+
+                <div class="form-row">
+                    <app-input id="date" type="date" label="Date" [(ngModel)]="form.date" name="date"
+                        [error]="errors()['date']" />
+                    <app-input id="duration" type="number" label="Duration (minutes)" placeholder="60"
+                        [(ngModel)]="form.duration" name="duration" [error]="errors()['duration']" />
+                </div>
+
+                <div class="form-row">
+                    <app-input id="numberOfEnrollments" type="number" label="Number of Enrollments" placeholder="0"
+                        [(ngModel)]="form.numberOfEnrollments" name="numberOfEnrollments"
+                        [error]="errors()['numberOfEnrollments']" />
+                    <div class="form-group">
+                        <label for="score" class="label">Score (1-5)</label>
+                        <div class="score-input">
+                            @for (star of [1, 2, 3, 4, 5]; track star) {
+                            <button type="button" class="star-btn" [class.active]="form.score >= star"
+                                (click)="form.score = star">
+                                ★
+                            </button>
+                            }
+                        </div>
+                        @if (errors()['score']) {
+                        <span class="error-message">{{ errors()['score'] }}</span>
+                        }
+                    </div>
+                </div>
+            </form>
+            }
+        </app-card-content>
+
+        <app-card-footer>
+            <div class="form-actions">
+                <app-button variant="outline" type="button" (click)="cancel()">
+                    Cancel
+                </app-button>
+                <app-button type="submit" [loading]="saving()" [disabled]="loadingData()" (click)="onSubmit()">
+                    {{ isEditMode() ? 'Update' : 'Create' }}
+                </app-button>
+            </div>
+        </app-card-footer>
+    </app-card>
+</div>

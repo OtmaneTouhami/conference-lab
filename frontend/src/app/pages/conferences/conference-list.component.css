@@ -1,0 +1,170 @@
+.page {
+    padding: var(--space-6);
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-6);
+}
+
+.page-header h1 {
+    margin-bottom: var(--space-1);
+}
+
+.text-muted {
+    color: hsl(var(--muted-foreground));
+}
+
+.filter-tabs {
+    display: flex;
+    gap: var(--space-1);
+    margin-bottom: var(--space-6);
+    border-bottom: 1px solid hsl(var(--border));
+    padding-bottom: var(--space-2);
+}
+
+.filter-tab {
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    border-radius: var(--radius) var(--radius) 0 0;
+    transition: all 0.2s;
+}
+
+.filter-tab:hover {
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--muted));
+}
+
+.filter-tab.active {
+    color: hsl(var(--foreground));
+    background-color: hsl(var(--background));
+    border-bottom: 2px solid hsl(var(--primary));
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-16);
+    gap: var(--space-4);
+}
+
+.error-state,
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8);
+    gap: var(--space-4);
+    text-align: center;
+}
+
+.conference-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .conference-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .conference-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.conference-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.conference-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.score {
+    display: flex;
+    gap: 2px;
+}
+
+.star {
+    color: hsl(var(--warning));
+    font-size: 0.875rem;
+}
+
+.star.empty {
+    color: hsl(var(--muted));
+}
+
+.conference-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 0.75rem;
+    color: hsl(var(--muted-foreground));
+}
+
+.value {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.card-actions {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid hsl(var(--muted));
+    border-top-color: hsl(var(--primary));
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

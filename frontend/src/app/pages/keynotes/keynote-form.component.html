@@ -1,0 +1,47 @@
+<div class="page">
+    <app-card class="form-card">
+        <app-card-header>
+            <app-card-title>
+                {{ isEditMode() ? 'Edit Keynote' : 'Create Keynote' }}
+            </app-card-title>
+            <app-card-description>
+                {{ isEditMode() ? 'Update the keynote speaker details' : 'Add a new keynote speaker to the system' }}
+            </app-card-description>
+        </app-card-header>
+
+        <app-card-content>
+            @if (loadingData()) {
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading keynote data...</p>
+            </div>
+            } @else {
+            <form (ngSubmit)="onSubmit()" class="form">
+                <div class="form-row">
+                    <app-input id="firstName" label="First Name" placeholder="Enter first name"
+                        [(ngModel)]="form.firstName" name="firstName" [error]="errors()['firstName']" />
+                    <app-input id="lastName" label="Last Name" placeholder="Enter last name" [(ngModel)]="form.lastName"
+                        name="lastName" [error]="errors()['lastName']" />
+                </div>
+
+                <app-input id="email" type="email" label="Email" placeholder="Enter email address"
+                    [(ngModel)]="form.email" name="email" [error]="errors()['email']" />
+
+                <app-input id="function" label="Function" placeholder="Enter function/role" [(ngModel)]="form.function"
+                    name="function" [error]="errors()['function']" />
+            </form>
+            }
+        </app-card-content>
+
+        <app-card-footer>
+            <div class="form-actions">
+                <app-button variant="outline" type="button" (click)="cancel()">
+                    Cancel
+                </app-button>
+                <app-button type="submit" [loading]="saving()" [disabled]="loadingData()" (click)="onSubmit()">
+                    {{ isEditMode() ? 'Update' : 'Create' }}
+                </app-button>
+            </div>
+        </app-card-footer>
+    </app-card>
+</div>

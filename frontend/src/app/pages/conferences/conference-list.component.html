@@ -1,0 +1,121 @@
+<div class="page">
+    <div class="page-header">
+        <div>
+            <h1>Conferences</h1>
+            <p class="text-muted">Manage conferences and events</p>
+        </div>
+        @if (authService.isAdmin()) {
+        <a routerLink="/conferences/new">
+            <app-button>
+                + Add Conference
+            </app-button>
+        </a>
+        }
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab" [class.active]="filter() === 'all'" (click)="filter.set('all')">
+            All
+        </button>
+        <button class="filter-tab" [class.active]="filter() === 'ACADEMIC'" (click)="filter.set('ACADEMIC')">
+            Academic
+        </button>
+        <button class="filter-tab" [class.active]="filter() === 'COMMERCIAL'" (click)="filter.set('COMMERCIAL')">
+            Commercial
+        </button>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading conferences...</p>
+    </div>
+    } @else if (error()) {
+    <app-card>
+        <app-card-content>
+            <div class="error-state">
+                <p>{{ error() }}</p>
+                <app-button variant="outline" (click)="loadConferences()">
+                    Try Again
+                </app-button>
+            </div>
+        </app-card-content>
+    </app-card>
+    } @else if (filteredConferences().length === 0) {
+    <app-card>
+        <app-card-content>
+            <div class="empty-state">
+                <p>No conferences found</p>
+                @if (authService.isAdmin()) {
+                <a routerLink="/conferences/new">
+                    <app-button>Add your first conference</app-button>
+                </a>
+                }
+            </div>
+        </app-card-content>
+    </app-card>
+    } @else {
+    <div class="conference-grid">
+        @for (conference of filteredConferences(); track conference.id) {
+        <app-card class="conference-card">
+            <app-card-header>
+                <div class="card-header-top">
+                    <app-badge [variant]="conference.type === 'ACADEMIC' ? 'default' : 'secondary'">
+                        {{ conference.type }}
+                    </app-badge>
+                    <div class="score">
+                        @for (star of getStars(conference.score); track $index) {
+                        <span class="star">★</span>
+                        }
+                        @for (star of getEmptyStars(conference.score); track $index) {
+                        <span class="star empty">★</span>
+                        }
+                    </div>
+                </div>
+                <app-card-title>{{ conference.title }}</app-card-title>
+            </app-card-header>
+            <app-card-content>
+                <div class="conference-details">
+                    <div class="detail">
+                        <span class="label">Date</span>
+                        <span class="value">{{ formatDate(conference.date) }}</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Duration</span>
+                        <span class="value">{{ conference.duration }} min</span>
+                    </div>
+                    <div class="detail">
+                        <span class="label">Enrollments</span>
+                        <span class="value">{{ conference.numberOfEnrollments }}</span>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <a [routerLink]="['/conferences', conference.id]" class="flex-1">
+                        <app-button variant="outline" class="w-full">
+                            View Details
+                        </app-button>
+                    </a>
+                    @if (authService.isAdmin()) {
+                    <a [routerLink]="['/conferences', conference.id, 'edit']">
+                        <app-button variant="ghost" size="icon">
+                            ✎
+                        </app-button>
+                    </a>
+                    <app-button variant="ghost" size="icon" (click)="confirmDelete(conference)">
+                        🗑
+                    </app-button>
+                    }
+                </div>
+            </app-card-content>
+        </app-card>
+        }
+    </div>
+    }
+
+    <app-dialog [open]="showDeleteDialog()" title="Delete Conference"
+        description="Are you sure you want to delete this conference? All reviews will also be deleted. This action cannot be undone."
+        confirmText="Delete" confirmVariant="destructive" [loading]="deleting()" (close)="showDeleteDialog.set(false)"
+        (confirm)="deleteConference()" />
+</div>

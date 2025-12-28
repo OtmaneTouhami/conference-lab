@@ -1,0 +1,4 @@
+:host {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+}

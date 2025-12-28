@@ -1,2 +1,4 @@
 # Ignore the local config repository
 /backend/config
+
+openapi/

@@ -1,0 +1,94 @@
+<div class="page">
+    <div class="page-header">
+        <div>
+            <h1>Keynotes</h1>
+            <p class="text-muted">Manage keynote speakers for your conferences</p>
+        </div>
+        @if (authService.isAdmin()) {
+        <a routerLink="/keynotes/new">
+            <app-button>
+                + Add Keynote
+            </app-button>
+        </a>
+        }
+    </div>
+
+    @if (loading()) {
+    <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading keynotes...</p>
+    </div>
+    } @else if (error()) {
+    <app-card>
+        <app-card-content>
+            <div class="error-state">
+                <p>{{ error() }}</p>
+                <app-button variant="outline" (click)="loadKeynotes()">
+                    Try Again
+                </app-button>
+            </div>
+        </app-card-content>
+    </app-card>
+    } @else if (keynotes().length === 0) {
+    <app-card>
+        <app-card-content>
+            <div class="empty-state">
+                <p>No keynotes found</p>
+                @if (authService.isAdmin()) {
+                <a routerLink="/keynotes/new">
+                    <app-button>Add your first keynote</app-button>
+                </a>
+                }
+            </div>
+        </app-card-content>
+    </app-card>
+    } @else {
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Function</th>
+                    @if (authService.isAdmin()) {
+                    <th class="text-right">Actions</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (keynote of keynotes(); track keynote.id) {
+                <tr>
+                    <td>
+                        <div class="keynote-name">
+                            <span class="avatar">{{ getInitials(keynote) }}</span>
+                            <span>{{ keynote.firstName }} {{ keynote.lastName }}</span>
+                        </div>
+                    </td>
+                    <td>{{ keynote.email }}</td>
+                    <td>{{ keynote.function }}</td>
+                    @if (authService.isAdmin()) {
+                    <td class="text-right">
+                        <div class="actions">
+                            <a [routerLink]="['/keynotes', keynote.id, 'edit']">
+                                <app-button variant="ghost" size="sm">
+                                    Edit
+                                </app-button>
+                            </a>
+                            <app-button variant="ghost" size="sm" (click)="confirmDelete(keynote)">
+                                Delete
+                            </app-button>
+                        </div>
+                    </td>
+                    }
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    <app-dialog [open]="showDeleteDialog()" title="Delete Keynote"
+        description="Are you sure you want to delete this keynote? This action cannot be undone." confirmText="Delete"
+        confirmVariant="destructive" [loading]="deleting()" (close)="showDeleteDialog.set(false)"
+        (confirm)="deleteKeynote()" />
+</div>
