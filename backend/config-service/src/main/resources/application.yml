@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/This_Semester_Directory/Systemes_Paralleles_et_Distribues/Labs/conference-lab/backend/config/
+          uri: ${HOME}/Be-Serious/Learning/ENSET/S3/Systemes_Paralleles_et_Distribues/Labs/conference-lab/backend/config/
 
 server:
   port: 9999
