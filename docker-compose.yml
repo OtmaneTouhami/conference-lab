@@ -1,0 +1,95 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8180:8080"
+    volumes:
+      - ./backend/keycloak/conference-realm.json:/opt/keycloak/data/import/conference-realm.json
+    command:
+      - start-dev
+      - --import-realm
+    networks:
+      - conference-network
+
+  config-service:
+    build: ./backend/config-service
+    container_name: config-service
+    ports:
+      - "9999:9999"
+    networks:
+      - conference-network
+
+  discovery-service:
+    build: ./backend/discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-service:9999/
+    depends_on:
+      - config-service
+    networks:
+      - conference-network
+
+  gateway-service:
+    build: ./backend/gateway-service
+    container_name: gateway-service
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-service:9999/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    depends_on:
+      - config-service
+      - discovery-service
+      - keycloak
+    networks:
+      - conference-network
+
+  conference-service:
+    build: ./backend/conference-service
+    container_name: conference-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-service:9999/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    depends_on:
+      - config-service
+      - discovery-service
+      - gateway-service
+    networks:
+      - conference-network
+
+  keynote-service:
+    build: ./backend/keynote-service
+    container_name: keynote-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-service:9999/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    depends_on:
+      - config-service
+      - discovery-service
+      - gateway-service
+    networks:
+      - conference-network
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - gateway-service
+    networks:
+      - conference-network
+
+networks:
+  conference-network:
+    driver: bridge
