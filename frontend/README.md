@@ -1,59 +1,68 @@
-# Frontend
+# Conference Management Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+This is the Angular 19 frontend for the Conference Management System. It provides a modern, responsive user interface for managing conferences, speakers, and reviews.
 
-## Development server
+## 🚀 Features
 
-To start a local development server, run:
+- **Angular 19**: Built with the latest Angular version.
+- **Signals-Based**: Uses Angular Signals for reactive state management (No Zone.js reliance).
+- **Authentication**: Integrated with Keycloak via `angular-oauth2-oidc`.
+- **Responsive Design**: Custom CSS grid system (Mobile/Tablet/Desktop).
+- **Role-Based Access**: Specialized views for Administrators and Users.
+
+## 🛠️ Tech Stack
+
+- **Framework**: Angular 19
+- **Language**: TypeScript 5.9
+- **Build Tool**: Angular CLI / Vite
+- **Package Manager**: pnpm
+
+## 📂 Project Structure
+
+```
+src/app/
+├── auth/           # Authentication logic (Guard, Interceptor, Service)
+├── components/     # Reusable UI components (Button, Card, Badge)
+├── models/         # TypeScript Interfaces (Conference, Keynote, User)
+├── pages/          # Main route components
+│   ├── home/
+│   ├── conferences/
+│   ├── keynotes/
+│   └── profile/
+└── app.config.ts   # Application Config (Providers, Routing)
+```
+
+## 💻 Development
+
+### Prerequisites
+- Node.js (v20+)
+- pnpm
+
+### Installation
+
+```bash
+pnpm install
+```
+
+### Running Locally
 
 ```bash
 ng serve
 ```
+Navigate to `http://localhost:4200/`.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Build for Production
 
 ```bash
 ng build
 ```
+The build artifacts will be stored in the `dist/` directory.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🐳 Docker
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+A Dockerfile is provided to containerize the frontend with Nginx.
 
 ```bash
-ng e2e
+docker build -t conference-frontend .
+docker run -p 4200:80 conference-frontend
 ```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
