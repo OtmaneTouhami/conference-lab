@@ -21,8 +21,14 @@ export class AuthService {
         return user.realm_access?.roles ?? [];
     });
 
-    readonly isAdmin = computed(() => this.roles().includes('ADMIN'));
-    readonly isUser = computed(() => this.roles().includes('USER'));
+    readonly isAdmin = computed(() => {
+        const roles = this.roles();
+        return roles.includes('ADMIN') || roles.includes('admin');
+    });
+    readonly isUser = computed(() => {
+        const roles = this.roles();
+        return roles.includes('USER') || roles.includes('user');
+    });
 
     readonly displayName = computed(() => {
         const user = this._user();
@@ -52,9 +58,28 @@ export class AuthService {
     }
 
     private loadUserProfile(): void {
-        const claims = this.oauthService.getIdentityClaims() as UserProfile;
-        if (claims) {
-            this._user.set(claims);
+        const idClaims = this.oauthService.getIdentityClaims() as UserProfile;
+        const accessToken = this.oauthService.getAccessToken();
+        let accessClaims: any = {};
+
+        if (accessToken) {
+            try {
+                const parts = accessToken.split('.');
+                if (parts.length === 3) {
+                    accessClaims = JSON.parse(atob(parts[1]));
+                }
+            } catch (e) {
+                console.error('Error parsing access token', e);
+            }
+        }
+
+        const mergedUser: UserProfile = {
+            ...idClaims,
+            realm_access: accessClaims.realm_access || idClaims?.realm_access
+        };
+
+        if (mergedUser) {
+            this._user.set(mergedUser);
         }
     }
 

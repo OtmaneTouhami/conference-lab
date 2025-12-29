@@ -26,9 +26,11 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
                         // Public endpoints
+                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .pathMatchers("/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/eureka/**").permitAll()
