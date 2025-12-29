@@ -41,4 +41,7 @@ public class Conference {
     @OneToMany(mappedBy = "conference", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
+
+    @Column(name = "keynote_id")
+    private UUID keynoteId;
 }

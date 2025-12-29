@@ -1,3 +1,5 @@
+import { Keynote } from './keynote.model';
+
 export type ConferenceType = 'ACADEMIC' | 'COMMERCIAL';
 
 export interface Conference {
@@ -8,6 +10,7 @@ export interface Conference {
     duration: number;
     numberOfEnrollments: number;
     score: number;
+    keynote?: Keynote;
 }
 
 export interface ConferenceRequest {
@@ -17,4 +20,5 @@ export interface ConferenceRequest {
     duration: number;
     numberOfEnrollments: number;
     score: number;
+    keynoteId: string;
 }

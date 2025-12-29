@@ -33,4 +33,6 @@ public class ConferenceRequestDto {
     @Min(value = 1, message = "Score must be at least 1")
     @Max(value = 5, message = "Score must be at most 5")
     private int score;
+    @NotNull(message = "Keynote ID is required")
+    private java.util.UUID keynoteId;
 }

@@ -63,54 +63,81 @@
             </app-card-content>
         </app-card>
 
+        @if(conference()!.keynote) {
         <app-card>
             <app-card-header>
-                <div class="reviews-header">
-                    <app-card-title>Reviews ({{ reviews().length }})</app-card-title>
-                    @if (authService.isAdmin()) {
-                    <app-button size="sm" (click)="showAddReview.set(true)">
-                        + Add Review
-                    </app-button>
-                    }
-                </div>
+                <app-card-title>Keynote Speaker</app-card-title>
             </app-card-header>
             <app-card-content>
-                @if (loadingReviews()) {
-                <div class="loading-inline">
-                    <div class="spinner-sm"></div>
-                    <span>Loading reviews...</span>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Name</span>
+                        <span class="detail-value">{{ conference()!.keynote?.firstName }} {{
+                            conference()!.keynote?.lastName }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Role</span>
+                        <span class="detail-value">{{ conference()!.keynote?.function }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">{{ conference()!.keynote?.email }}</span>
+                    </div>
                 </div>
-                } @else if (reviews().length === 0) {
-                <p class="text-muted text-center">No reviews yet</p>
-                } @else {
-                <div class="reviews-list">
-                    @for (review of reviews(); track review.id) {
-                    <div class="review-item">
-                        <div class="review-header">
-                            <div class="review-stars">
-                                @for (star of getStars(review.stars); track $index) {
-                                <span class="star">★</span>
-                                }
-                                @for (star of getEmptyStars(review.stars); track $index) {
-                                <span class="star empty">★</span>
-                                }
-                            </div>
-                            <span class="review-date">{{ formatDate(review.date) }}</span>
-                        </div>
-                        <p class="review-text">{{ review.text }}</p>
+            </app-card-content>
+        </app-card>
+        }
+
+        <div class="full-width-card">
+            <app-card>
+                <app-card-header>
+                    <div class="reviews-header">
+                        <app-card-title>Reviews ({{ reviews().length }})</app-card-title>
                         @if (authService.isAdmin()) {
-                        <div class="review-actions">
-                            <app-button variant="ghost" size="sm" (click)="confirmDeleteReview(review)">
-                                Delete
-                            </app-button>
+                        <app-button size="sm" (click)="showAddReview.set(true)">
+                            + Add Review
+                        </app-button>
+                        }
+                    </div>
+                </app-card-header>
+                <app-card-content>
+                    @if (loadingReviews()) {
+                    <div class="loading-inline">
+                        <div class="spinner-sm"></div>
+                        <span>Loading reviews...</span>
+                    </div>
+                    } @else if (reviews().length === 0) {
+                    <p class="text-muted text-center">No reviews yet</p>
+                    } @else {
+                    <div class="reviews-list">
+                        @for (review of reviews(); track review.id) {
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="review-stars">
+                                    @for (star of getStars(review.stars); track $index) {
+                                    <span class="star">★</span>
+                                    }
+                                    @for (star of getEmptyStars(review.stars); track $index) {
+                                    <span class="star empty">★</span>
+                                    }
+                                </div>
+                                <span class="review-date">{{ formatDate(review.date) }}</span>
+                            </div>
+                            <p class="review-text">{{ review.text }}</p>
+                            @if (authService.isAdmin()) {
+                            <div class="review-actions">
+                                <app-button variant="ghost" size="sm" (click)="confirmDeleteReview(review)">
+                                    Delete
+                                </app-button>
+                            </div>
+                            }
                         </div>
                         }
                     </div>
                     }
-                </div>
-                }
-            </app-card-content>
-        </app-card>
+                </app-card-content>
+            </app-card>
+        </div>
     </div>
     }
 

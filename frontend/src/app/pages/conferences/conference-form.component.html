@@ -21,6 +21,22 @@
                     name="title" [error]="errors()['title']" />
 
                 <div class="form-group">
+                    <label for="keynote" class="label">Keynote Speaker</label>
+                    <select id="keynote" name="keynote" [(ngModel)]="form.keynoteId" class="select"
+                        [class.error]="errors()['keynoteId']">
+                        <option value="">Select a speaker</option>
+                        @for (keynote of keynotes(); track keynote.id) {
+                        <option [value]="keynote.id">
+                            {{ keynote.firstName }} {{ keynote.lastName }}
+                        </option>
+                        }
+                    </select>
+                    @if (errors()['keynoteId']) {
+                    <span class="error-message">{{ errors()['keynoteId'] }}</span>
+                    }
+                </div>
+
+                <div class="form-group">
                     <label for="type" class="label">Type</label>
                     <select id="type" name="type" [(ngModel)]="form.type" class="select"
                         [class.error]="errors()['type']">

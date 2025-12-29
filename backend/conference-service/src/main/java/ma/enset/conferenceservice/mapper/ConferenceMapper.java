@@ -19,6 +19,7 @@ public class ConferenceMapper {
                 .date(conferenceRequestDto.getDate())
                 .duration(conferenceRequestDto.getDuration())
                 .numberOfEnrollments(conferenceRequestDto.getNumberOfEnrollments())
+                .keynoteId(conferenceRequestDto.getKeynoteId())
                 .build();
     }
 
@@ -47,5 +48,6 @@ public class ConferenceMapper {
         entity.setDate(dto.getDate());
         entity.setDuration(dto.getDuration());
         entity.setNumberOfEnrollments(dto.getNumberOfEnrollments());
+        entity.setKeynoteId(dto.getKeynoteId());
     }
 }

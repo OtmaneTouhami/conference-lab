@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ConferenceService } from '../../services/conference.service';
 import { ConferenceRequest } from '../../models/conference.model';
+import { KeynoteService } from '../../services/keynote.service';
+import { Keynote } from '../../models/keynote.model';
 import { ButtonComponent } from '../../components/ui/button.component';
 import { InputComponent } from '../../components/ui/input.component';
 import { CardComponent, CardHeaderComponent, CardTitleComponent, CardDescriptionComponent, CardContentComponent, CardFooterComponent } from '../../components/ui/card.component';
@@ -27,6 +29,7 @@ import { ToastService } from '../../components/ui/toast.component';
 })
 export class ConferenceFormComponent implements OnInit {
     private conferenceService = inject(ConferenceService);
+    private keynoteService = inject(KeynoteService);
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private toastService = inject(ToastService);
@@ -35,6 +38,7 @@ export class ConferenceFormComponent implements OnInit {
     loadingData = signal(false);
     saving = signal(false);
     errors = signal<Record<string, string>>({});
+    keynotes = signal<Keynote[]>([]);
 
     form: ConferenceRequest = {
         title: '',
@@ -42,17 +46,26 @@ export class ConferenceFormComponent implements OnInit {
         date: '',
         duration: 60,
         numberOfEnrollments: 0,
-        score: 1
+        score: 1,
+        keynoteId: ''
     };
 
     private conferenceId: string | null = null;
 
     ngOnInit(): void {
+        this.loadKeynotes();
         this.conferenceId = this.route.snapshot.params['id'];
         if (this.conferenceId && !this.router.url.includes('/new')) {
             this.isEditMode.set(true);
             this.loadConference();
         }
+    }
+
+    private loadKeynotes(): void {
+        this.keynoteService.getKeynotes().subscribe({
+            next: (keynotes) => this.keynotes.set(keynotes),
+            error: (err) => console.error('Error loading keynotes:', err)
+        });
     }
 
     private loadConference(): void {
@@ -67,7 +80,8 @@ export class ConferenceFormComponent implements OnInit {
                     date: conference.date,
                     duration: conference.duration,
                     numberOfEnrollments: conference.numberOfEnrollments,
-                    score: conference.score
+                    score: conference.score,
+                    keynoteId: conference.keynote?.id || ''
                 };
                 this.loadingData.set(false);
             },
@@ -110,6 +124,9 @@ export class ConferenceFormComponent implements OnInit {
 
         if (!this.form.title.trim()) {
             newErrors['title'] = 'Title is required';
+        }
+        if (!this.form.keynoteId) {
+            newErrors['keynoteId'] = 'Keynote Speaker is required';
         }
         if (!this.form.type) {
             newErrors['type'] = 'Type is required';

@@ -1,6 +1,8 @@
 package ma.enset.conferenceservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.enset.conferenceservice.client.KeynoteClient;
 import ma.enset.conferenceservice.dto.ConferenceRequestDto;
 import ma.enset.conferenceservice.dto.ConferenceResponseDto;
 import ma.enset.conferenceservice.entity.Conference;
@@ -13,18 +15,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ConferenceServiceImpl implements ConferenceService {
     private final ConferenceRepository conferenceRepository;
     private final ConferenceMapper conferenceMapper;
+    private final KeynoteClient keynoteClient;
 
     @Override
     @Transactional
     public ConferenceResponseDto createConference(ConferenceRequestDto ConferenceRequestDto) {
         Conference conference = conferenceMapper.toEntity(ConferenceRequestDto);
-        return conferenceMapper.toDto(conferenceRepository.save(conference));
+        conference = conferenceRepository.save(conference);
+        ConferenceResponseDto responseDto = conferenceMapper.toDto(conference);
+        try {
+            responseDto.setKeynote(keynoteClient.getKeynoteById(conference.getKeynoteId()));
+        } catch (Exception e) {
+             // Fallback handled by CircuitBreaker in a client, or ignore if service down
+            log.error("Error fetching keynote data for conference {}: {}", conference.getId(), e.getMessage());
+        }
+        return responseDto;
     }
 
     @Override
@@ -32,13 +44,23 @@ public class ConferenceServiceImpl implements ConferenceService {
         Conference conference = conferenceRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Conference with the id '" + id + "' was not found")
         );
-        return conferenceMapper.toDto(conference);
+        ConferenceResponseDto responseDto = conferenceMapper.toDto(conference);
+        if (conference.getKeynoteId() != null) {
+            responseDto.setKeynote(keynoteClient.getKeynoteById(conference.getKeynoteId()));
+        }
+        return responseDto;
     }
 
     @Override
     public List<ConferenceResponseDto> getAllConferences() {
         List<Conference> conferences = conferenceRepository.findAll();
-        return conferences.stream().map(conferenceMapper::toDto).toList();
+        return conferences.stream().map(conference -> {
+            ConferenceResponseDto responseDto = conferenceMapper.toDto(conference);
+            if (conference.getKeynoteId() != null) {
+                responseDto.setKeynote(keynoteClient.getKeynoteById(conference.getKeynoteId()));
+            }
+            return responseDto;
+        }).toList();
     }
 
     @Override
@@ -49,7 +71,11 @@ public class ConferenceServiceImpl implements ConferenceService {
         );
         conferenceMapper.updateEntityFromDto(ConferenceRequestDto, conference);
         Conference updatedConference = conferenceRepository.save(conference);
-        return conferenceMapper.toDto(updatedConference);
+        ConferenceResponseDto responseDto = conferenceMapper.toDto(updatedConference);
+        if (updatedConference.getKeynoteId() != null) {
+            responseDto.setKeynote(keynoteClient.getKeynoteById(updatedConference.getKeynoteId()));
+        }
+        return responseDto;
     }
 
     @Override

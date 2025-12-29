@@ -19,4 +19,5 @@ public class ConferenceResponseDto {
     private int duration;
     private int numberOfEnrollments;
     private int score;
+    private KeynoteResponseDto keynote;
 }

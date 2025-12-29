@@ -6,11 +6,15 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.UUID;
 
 @FeignClient(name = "keynote-service")
 public interface KeynoteClient {
+    Logger log = LoggerFactory.getLogger(KeynoteClient.class);
 
     @GetMapping("/api/v1/keynotes")
     @CircuitBreaker(name = "keynoteService", fallbackMethod = "getAllKeynotesFallback")
@@ -22,10 +26,12 @@ public interface KeynoteClient {
 
     // Fallback methods
     default List<KeynoteResponseDto> getAllKeynotesFallback(Exception e) {
+        log.error("Fallback triggered for getAllKeynotes", e);
         return List.of();
     }
 
     default KeynoteResponseDto getKeynoteByIdFallback(UUID id, Exception e) {
+        log.error("Fallback triggered for getKeynoteById with id " + id, e);
         return KeynoteResponseDto.builder()
                 .id(id)
                 .firstName("Unknown")
